@@ -13,9 +13,11 @@ en-GR (English/United Kingdom)
 es-ES (Spanish/Spain)
 es-MX (Spanish/Mexico)
 pt-BR (Portuguese/Brazil)
+ja-JP (Japan)
+ko-KR (Korean)
 */
 
-type languageCode = "es" | "de" | "en" | "it" | "ko-KR" | "en-US" | "en-GR" | "es-ES" | "es-MX" | "pt-BR";
+type languageCode = "es" | "de" | "en" | "it" | "ko-KR" | "en-US" | "en-GR" | "es-ES" | "es-MX" | "pt-BR" | "ja-JP" | "ko-KR";
 interface IBody {
   AccountLanguage: languageCode | undefined;
   todoCount: string | undefined;
@@ -84,11 +86,9 @@ export const getTodo = async (req: Request, res: Response) => {
 
     const completion = await Promise.race([makeTodo(body.todoCount), tiemoutPromise]);
 
-    if (typeof completion === "string") {
-      return res.status(408).json("408 Request Timeout");
-    }
-
+    if (typeof completion === "string") return res.status(408).json("408 Request Timeout");
     if (language === "en-US") return res.status(200).json(completion);
+
     return res.status(200).json(await translateTodo(completion, language));
   } catch (error) {
     console.log(error);
